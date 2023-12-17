@@ -7,4 +7,4 @@
 # ITERATIONS: 1000    (-n 1000)
 # TRIES: 1            (-r 1)
 
-./acotsp-AVX2 -i instances/pr2392.tsp -m 80 -k 1024 -l 1 -n 1000 -r 10
+./acotsp-AVX2 -i instances/pr2392.tsp -m 80 -k 1024 -l 0 -n 1000 -r 10
