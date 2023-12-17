@@ -11,7 +11,7 @@
 #define DEFAULT_MAX_TRIALS      13
 #define DEFAULT_MAX_ITERATIONS  100
 #define DEFAULT_ALPHA           1.0f
-#define DEFAULT_BETA            5.0f    /* 2 to 5*/
+#define DEFAULT_BETA            2.0f    /* 2 to 5*/
 #define DEFAULT_RHO             0.05f
 #define DEFAULT_RHO_MAX         1.0f
 #define DEFAULT_K               32
@@ -112,7 +112,7 @@ void init_program (int argc, char * argv[])
 
     // SMMAS
     const char * format_f2 = " %19s %15.9f%s\n";
-    float k = (n + 50) / 100.0f;
+    float k = (n + 500) / 1000.0f;
     rho_min = rho_max / (n * k);
     p_rho_min = rho * rho_min;
     printf(format_f2, "Rho_Min:           ", rho_min, CHECK_DEFAULT(rho_min, rho_min));
