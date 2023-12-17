@@ -144,7 +144,6 @@ void init_pheromone_trails ()
     }
 }
 
-// TODO: use kd-tree to optimize 
 void choose_closest_next_naive (const int a, const int phase){
     const int current_city = tour[a][phase-1];
 
@@ -312,9 +311,7 @@ void init_trial ()
 
     best_tour_length = INFTY;
 
-    //pheromone_initial_trail = (float) m / (float) nn_tour();
-    // SMMAS
-    pheromone_initial_trail = rho_max;
+    pheromone_initial_trail = (float) m / (float) nn_tour();
 
     init_pheromone_trails();
 
@@ -727,7 +724,6 @@ void pheromone_evaporation ()
 
     const float rho_d_copy = rho_d;
 
-    // SMMAS-MF: same evaporation
     #pragma omp parallel for
     for (int i = 0; i < n; i++) {
         float * pheromone_v = pheromone[i];
@@ -738,29 +734,6 @@ void pheromone_evaporation ()
     }
 
     t_pheromone_evaporation += omp_get_wtime() - t_start;
-}
-
-void smmas_deposit(int origin_city, int destination_city) {
-  int * city_indexes_v = choice_info_meta[origin_city];
-  int city_index;
-  for (int i = 0; i < CHUNK_L; ++i) {
-    city_index = city_indexes_v[i];
-    if (city_index == destination_city) {
-      pheromone[origin_city][city_index] += p_rho_min;
-      if (pheromone[origin_city][city_index] < rho_min) {
-        pheromone[origin_city][city_index] = rho_min;
-      } else if (pheromone[origin_city][city_index] > rho_max) {
-        pheromone[origin_city][city_index] = rho_max;
-      }
-    } else {
-      pheromone[origin_city][city_index] += p_rho_min;
-      if (pheromone[origin_city][city_index] < rho_min) {
-        pheromone[origin_city][city_index] = rho_min;
-      } else if (pheromone[origin_city][city_index] > rho_max) {
-        pheromone[origin_city][city_index] = rho_max;
-      }
-    }
-  }
 }
 
 /**
@@ -777,16 +750,11 @@ void pheromone_deposit () {
   int * tour_v = tour[best_ant];
   const float d_tau = 1.0f / (float) tour_length[best_ant];
 
-  // SMMAS: TODO: Change to SMMAS deposit method
-  // Only update for NEIGHBOURS cities
-  // choice info meta
   #pragma omp parallel for
   for (int i = 0; i < n; i++) {
     int j = tour_v[i];
     int k = tour_v[i+1];
 
-    // smmas_deposit(j, k);
-    // smmas_deposit(k, j);
     if((city_index = get_city_index(j, k)) != -1) pheromone[j][city_index] += d_tau;
     if((city_index = get_city_index(k, j)) != -1) pheromone[k][city_index] += d_tau;
   }
