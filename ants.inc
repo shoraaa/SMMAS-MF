@@ -747,7 +747,7 @@ void smmas_deposit(int origin_city, int destination_city) {
     city_index = city_indexes_v[i];
 
     if (city_index == destination_city) {
-      pheromone[origin_city][city_index] += p_rho_min;
+      pheromone[origin_city][city_index] += p_rho_max;
       if (pheromone[origin_city][city_index] < rho_min) {
         pheromone[origin_city][city_index] = rho_min;
       } else if (pheromone[origin_city][city_index] > rho_max) {
