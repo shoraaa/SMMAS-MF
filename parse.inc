@@ -179,6 +179,7 @@ void read_etsp ()
         else if (!strcmp("EDGE_WEIGHT_TYPE", buf)) {
             // Set pointer to appropriate distance function; has to be one of 
             // EUC_2D, CEIL_2D, GEO, ATT or EUC_TOROID. Everything else fails
+            // TODO: Only EUC_2D to be optimized by KD-Tree
             fscanf(tsp_file, "%s", buf);
             fscanf(tsp_file, "%s", buf);
             if (!strcmp("EUC_2D", buf))
