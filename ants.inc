@@ -740,7 +740,7 @@ void pheromone_evaporation ()
     t_pheromone_evaporation += omp_get_wtime() - t_start;
 }
 
-void clamp(int& p) {
+void clamp_pheromone(float& p) {
   if (p < rho_min) {
     p = rho_min;
   } else if (p > rho_max) {
@@ -756,10 +756,10 @@ void smmas_deposit(int origin_city, int destination_city) {
 
     if (city_index == destination_city) {
       pheromone[origin_city][i] += p_rho_max;
-      clamp(pheromone[origin_city][i]);
+      clamp_pheromone(pheromone[origin_city][i]);
     } else {
       pheromone[origin_city][i] += p_rho_min;
-      clamp(pheromone[origin_city][i]);
+      clamp_pheromone(pheromone[origin_city][i]);
     }
 
   }
