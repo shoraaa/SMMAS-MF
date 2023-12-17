@@ -743,19 +743,19 @@ void smmas_deposit(int origin_city, int destination_city) {
   int city_index;
   for (int i = 0; i < CHUNK_L; ++i) {
     city_index = city_indexes_v[i];
-    if (city_index[i] == destination_city) {
-      pheromone[j][city_index] += p_rho_min;
-      if (pheromone[j][city_index] < rho_min) {
-        pheromone[j][city_index] = rho_min;
+    if (city_index == destination_city) {
+      pheromone[origin_city][city_index] += p_rho_min;
+      if (pheromone[origin_city][city_index] < rho_min) {
+        pheromone[origin_city][city_index] = rho_min;
       } else if (pheromone[j][city_index] > rho_max) {
-        pheromone[j][city_index] = rho_max;
+        pheromone[origin_city][city_index] = rho_max;
       }
     } else {
-      pheromone[j][city_index] += p_rho_min;
-      if (pheromone[j][city_index] < rho_min) {
-        pheromone[j][city_index] = rho_min;
-      } else if (pheromone[j][city_index] > rho_max) {
-        pheromone[j][city_index] = rho_max;
+      pheromone[origin_city][city_index] += p_rho_min;
+      if (pheromone[origin_city][city_index] < rho_min) {
+        pheromone[origin_city][city_index] = rho_min;
+      } else if (pheromone[origin_city][city_index] > rho_max) {
+        pheromone[origin_city][city_index] = rho_max;
       }
     }
   }

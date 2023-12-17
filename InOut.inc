@@ -108,7 +108,7 @@ void init_program (int argc, char * argv[])
     rho_d = 1.0f - rho;
 
     // SMMAS
-    rho_min = rho_max / n
+    rho_min = rho_max / n;
 
     threads = omp_get_max_threads();
 
