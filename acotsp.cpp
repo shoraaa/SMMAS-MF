@@ -16,11 +16,10 @@ float rho;              // Pheromone evaporation rate
 float alpha;            // Importance of the pheromone trail
 float beta;             // Importance of the heuristic information
 
-const float p = 0.05f;
-const float rho_max = 1.0f;
+float rho_max;
 float rho_min;
-const float p_rho_min = p * rho_min;
-const float p_rho_max = p * rho_max;
+float p_rho_min;
+float p_rho_max;
 
 int max_trials;         // Number of independent trials
 int max_iterations;     // Number of iterations
