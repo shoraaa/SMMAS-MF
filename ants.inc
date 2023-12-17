@@ -741,27 +741,15 @@ void pheromone_evaporation ()
 }
 
 void clamp_pheromone(float& p) {
-  if (p < rho_min) {
-    p = rho_min;
-  } else if (p > rho_max) {
-    p = rho_max;
-  }
+  p = fmin(fmax(p, rho_min), rho_max);
 }
 
 void smmas_deposit(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
-  int city_index;
+  #pragma omp parallel for
   for (int i = 0; i < CHUNK_L; ++i) {
-    city_index = city_indexes_v[i];
-
-    if (city_index == destination_city) {
-      pheromone[origin_city][i] += p_rho_max;
-      clamp_pheromone(pheromone[origin_city][i]);
-    } else {
-      pheromone[origin_city][i] += p_rho_min;
-      clamp_pheromone(pheromone[origin_city][i]);
-    }
-
+    pheromone[origin_city][i] += city_indexes_v[i] == destination_city ? p_rho_max : p_rho_min;
+    clamp_pheromone(pheromone[origin_city][i]);
   }
 }
 
@@ -775,11 +763,9 @@ void pheromone_deposit () {
   const double t_start = omp_get_wtime();
 
   int best_ant = find_best();
-  int city_index;
   int * tour_v = tour[best_ant];
-  const float d_tau = 1.0f / (float) tour_length[best_ant];
 
-  // SMMAS: TODO: Change to SMMAS deposit method
+  // SMMAS:
   // Only update for NEIGHBOURS cities
   // choice info meta
   #pragma omp parallel for
@@ -789,8 +775,6 @@ void pheromone_deposit () {
 
     smmas_deposit(j, k);
     smmas_deposit(k, j);
-    // if((city_index = get_city_index(j, k)) != -1) pheromone[j][city_index] += d_tau;
-    // if((city_index = get_city_index(k, j)) != -1) pheromone[k][city_index] += d_tau;
   }
 
   t_pheromone_deposit += omp_get_wtime() - t_start;
