@@ -312,9 +312,9 @@ void init_trial ()
 
     best_tour_length = INFTY;
 
-    pheromone_initial_trail = (float) m / (float) nn_tour();
+    //pheromone_initial_trail = (float) m / (float) nn_tour();
     // SMMAS
-    //pheromone_initial_trail = rho_max;
+    pheromone_initial_trail = rho_max;
 
     init_pheromone_trails();
 
@@ -785,10 +785,10 @@ void pheromone_deposit () {
     int j = tour_v[i];
     int k = tour_v[i+1];
 
-    // smmas_deposit(j, k);
-    // smmas_deposit(k, j);
-    if((city_index = get_city_index(j, k)) != -1) pheromone[j][city_index] += d_tau;
-    if((city_index = get_city_index(k, j)) != -1) pheromone[k][city_index] += d_tau;
+    smmas_deposit(j, k);
+    smmas_deposit(k, j);
+    // if((city_index = get_city_index(j, k)) != -1) pheromone[j][city_index] += d_tau;
+    // if((city_index = get_city_index(k, j)) != -1) pheromone[k][city_index] += d_tau;
   }
 
   t_pheromone_deposit += omp_get_wtime() - t_start;
