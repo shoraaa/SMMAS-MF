@@ -740,6 +740,14 @@ void pheromone_evaporation ()
     t_pheromone_evaporation += omp_get_wtime() - t_start;
 }
 
+void clamp(int& p) {
+  if (p < rho_min) {
+    p = rho_min;
+  } else if (p > rho_max) {
+    p = rho_max;
+  }
+}
+
 void smmas_deposit(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
   int city_index;
@@ -748,20 +756,10 @@ void smmas_deposit(int origin_city, int destination_city) {
 
     if (city_index == destination_city) {
       pheromone[origin_city][i] += p_rho_max;
-      if (pheromone[origin_city][i] < rho_min) {
-        pheromone[origin_city][i] = rho_min;
-      } else if (pheromone[origin_city][i] > rho_max) {
-        pheromone[origin_city][i] = rho_max;
-      }
-    }
-
-    else {
+      clamp(pheromone[origin_city][i]);
+    } else {
       pheromone[origin_city][i] += p_rho_min;
-      if (pheromone[origin_city][i] < rho_min) {
-        pheromone[origin_city][i] = rho_min;
-      } else if (pheromone[origin_city][i] > rho_max) {
-        pheromone[origin_city][i] = rho_max;
-      }
+      clamp(pheromone[origin_city][i]);
     }
 
   }
