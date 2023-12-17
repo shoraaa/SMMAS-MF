@@ -747,11 +747,11 @@ void smmas_deposit(int origin_city, int destination_city) {
     city_index = city_indexes_v[i];
 
     if (city_index == destination_city) {
-      pheromone[origin_city][city_index] += 0.05;
-      if (pheromone[origin_city][city_index] < rho_min) {
-        pheromone[origin_city][city_index] = rho_min;
-      } else if (pheromone[origin_city][city_index] > rho_max) {
-        pheromone[origin_city][city_index] = rho_max;
+      pheromone[origin_city][i] += 0.05;
+      if (pheromone[origin_city][i] < rho_min) {
+        pheromone[origin_city][i] = rho_min;
+      } else if (pheromone[origin_city][i] > rho_max) {
+        pheromone[origin_city][i] = rho_max;
       }
     }
 
@@ -790,7 +790,7 @@ void pheromone_deposit () {
     int k = tour_v[i+1];
 
     smmas_deposit(j, k);
-    // smmas_deposit(k, j);
+    smmas_deposit(k, j);
     // if((city_index = get_city_index(j, k)) != -1) pheromone[j][city_index] += d_tau;
     // if((city_index = get_city_index(k, j)) != -1) pheromone[k][city_index] += d_tau;
   }
