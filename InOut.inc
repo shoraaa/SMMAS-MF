@@ -112,7 +112,7 @@ void init_program (int argc, char * argv[])
 
     // SMMAS
     const char * format_f2 = " %19s %15.9f%s\n";
-    rho_min = rho_max / n;
+    rho_min = rho_max / ((n + 50.0f) / 100.0f);
     p_rho_min = rho * rho_min;
     printf("WHY\n");
     printf(format_f2, "Rho_Min:           ", rho_min, CHECK_DEFAULT(rho_min, rho_min));
