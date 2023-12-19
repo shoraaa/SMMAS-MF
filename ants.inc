@@ -139,7 +139,7 @@ void init_pheromone_trails ()
 
         __assume_aligned(pheromone_v, 64);
 
-        for (int j = 0; j < CHUNK_L; j++)
+        for (int j = 0; j < CHUNK; j++)
             pheromone_v[j] = pheromone_initial_trail;
     }
 }
