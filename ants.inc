@@ -543,11 +543,11 @@ void two_phase_fallback(int a, int phase) {
 }
 
 void conservative_fallback(int a, int phase) {
-  int current_city = tour[a][phase-1];
-  int city = -1;
-  float max_prob = -1.0f;
+  const int current_city = tour[a][phase-1];
   float * visited_v = visited[a];
+  float * choice_info_v = choice_info[current_city];
   int * choice_info_meta_v = choice_info_meta[current_city];
+  float * seeds_v = seeds[thread_id];
 
   __assume_aligned(visited_v, 64);
   __assume_aligned(choice_info_meta_v, 64);
