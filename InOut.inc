@@ -12,7 +12,7 @@
 #define DEFAULT_MAX_ITERATIONS  100
 #define DEFAULT_ALPHA           1.0f
 #define DEFAULT_BETA            5.0f    /* 2 to 5*/
-#define DEFAULT_RHO             0.25f
+#define DEFAULT_RHO             0.1f
 #define DEFAULT_RHO_MAX         1.0f
 #define DEFAULT_K               32
 #define DEFAULT_L               100.0f
