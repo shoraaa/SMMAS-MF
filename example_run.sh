@@ -7,4 +7,4 @@
 # ITERATIONS: 1000    (-n 1000)
 # TRIES: 1            (-r 1)
 
-./acotsp-AVX2 -i instances/mona-lisa100K.tsp -m 80 -k 1024 -l 0 -n 1000 -r 1
+./acotsp-AVX2 -i instances/d15112.tsp -m 80 -k 1024 -l 0 -n 1000 -r 1
