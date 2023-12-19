@@ -542,7 +542,7 @@ void two_phase_fallback(int a, int phase) {
 
 }
 
-void conservative_fallback(int a, int phase) {
+void conservative_fallback(const int a, const int phase, const int thread_id) {
   const int current_city = tour[a][phase-1];
   float * visited_v = visited[a];
   float * choice_info_v = choice_info[current_city];
@@ -550,7 +550,12 @@ void conservative_fallback(int a, int phase) {
   float * seeds_v = seeds[thread_id];
 
   __assume_aligned(visited_v, 64);
+  __assume_aligned(choice_info_v, 64);
   __assume_aligned(choice_info_meta_v, 64);
+  __assume_aligned(seeds_v, 64);
+
+  int city = -1;
+  float max_prob = -1.0f;
 
   #pragma ivdep
   for (int i = CHUNK; i < CHUNK_L; i++) {
@@ -603,7 +608,7 @@ void choose_next (const int a, const int thread_id, const int phase)
 
     if (max_prob <= 0.0f) {
         //two_phase_fallback(a, phase);
-        conservative_fallback(a, phase);
+        conservative_fallback(a, phase, thread_id);
     }
     else {
         tour[a][phase] = choice_info_meta_v[city];
