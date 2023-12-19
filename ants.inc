@@ -83,7 +83,7 @@ void allocate_memory ()
 
     seeds = generate_real_matrix(threads, n);
 
-    pheromone = generate_real_matrix(n, CHUNK_L);
+    pheromone = generate_real_matrix(n, CHUNK);
 
     choice_info = generate_real_matrix(n, CHUNK_L);
 

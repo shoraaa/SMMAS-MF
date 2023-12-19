@@ -66,10 +66,10 @@ void write_params ()
     printf(format_f1, "Alpha:             ", alpha, CHECK_DEFAULT(alpha, DEFAULT_ALPHA));
     printf(format_f1, "Beta:              ", beta, CHECK_DEFAULT(beta, DEFAULT_BETA));
     printf(format_f2, "Rho:               ", rho, CHECK_DEFAULT(rho, DEFAULT_RHO));
-    printf(format_f2, "Rho_Max:           ", rho_max, CHECK_DEFAULT(rho_max, DEFAULT_RHO_MAX));
-    printf(format_f2, "Rho_Min:           ", rho_min, CHECK_DEFAULT(rho_min, rho_min));
-    printf(format_f2, "Delta_Rho_Max:     ", p_rho_max, CHECK_DEFAULT(0, p_rho_max));
-    printf(format_f2, "Delta_Rho_Min:     ", p_rho_min, CHECK_DEFAULT(0, p_rho_min));
+    printf(format_f2, "Max rho:           ", rho_max, CHECK_DEFAULT(rho_max, DEFAULT_RHO_MAX));
+    printf(format_f2, "Min rho:           ", rho_min, CHECK_DEFAULT(rho_min, -1));
+    printf(format_f2, "P * rMax:     ", p_rho_max, CHECK_DEFAULT(p_rho_max, DEFAULT_RHO_MAX));
+    printf(format_f2, "P * rMin:     ", p_rho_min, CHECK_DEFAULT(p_rho_min, -1));
     printf(format_s, "Selection Function:", "I-Roulette v3");
     printf(format_d, "Threads:           ", threads, "");
     printf(format_d, "Neighbours:        ", CHUNK, "");
