@@ -115,7 +115,7 @@ void init_program (int argc, char * argv[])
     // SMMAS
     const char * format_f2 = " %19s %15.9f%s\n";
     float k = n / 64.0f;
-    rho_min = rho_max / (n * k);
+    rho_min = rho_max / 1024.0f;
     p_rho_min = rho * rho_min;
     
 
