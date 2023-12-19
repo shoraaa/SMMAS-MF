@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.inc": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "limits": "cpp"
     }
 }
