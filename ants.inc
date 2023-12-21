@@ -785,7 +785,7 @@ void pheromone_deposit () {
 /**
  * @brief Manage global pheromone trail update
  * Pheromone trails are evaporated and pheromones are deposited according to the
- * rules defined by the Ant System algorithm.
+ * rules defined by the Smoothed Max-Min Ant System.
  */
 
 void pheromone_update ()
