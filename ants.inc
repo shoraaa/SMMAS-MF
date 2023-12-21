@@ -678,7 +678,7 @@ void update_statistics ()
 
     t_stats += omp_get_wtime() - t_start;
 
-    three_opt(tour_length[iteration_best_ant], omp_get_thread_num());
+    three_opt(tour[iteration_best_ant], omp_get_thread_num());
 }
 
 /**
