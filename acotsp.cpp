@@ -53,7 +53,7 @@ int main(int argc, char * argv[])
         for (iteration = 0; iteration < max_iterations; iteration++) {
             tour_construction();
   
-            // local_search();
+            local_search();
 
             pheromone_update();
         }
