@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <sys/time.h>
 
-#define CHUNK 64
+#define CHUNK 32
 #define CHUNK_L (CHUNK+K_BACKUP)
 
 int ** choice_info_meta;             // Choice information matrix
@@ -785,7 +785,7 @@ void pheromone_deposit () {
 /**
  * @brief Manage global pheromone trail update
  * Pheromone trails are evaporated and pheromones are deposited according to the
- * rules defined by the Smoothed Max-Min Ant System.
+ * rules defined by the Ant System algorithm.
  */
 
 void pheromone_update ()
