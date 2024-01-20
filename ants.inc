@@ -443,9 +443,9 @@ void compute_choice_info_init ()
         #pragma ivdep
         for (int j = 0; j < n; j++)
           //choice_info_tmp_v[j] = p_init * powf(1.0f / ((float) distance(i,j) + 0.1f), beta);
-          choice_info_tmp_v[j] = - (float) distance(i,j);
+          choice_info_tmp_v[j] = -distance(i, j);
 
-	      choice_info_tmp_v[i] = 0.0f;
+	choice_info_tmp_v[i] = 0.0f;
 
         // Sort choice info
         for (int i = 0; i < n; i++) choice_info_meta_tmp_v[i] = i;
@@ -527,6 +527,7 @@ void two_phase_fallback(int a, int phase) {
         city = i;
         min = dist;
       }
+      break;
     }
   }
 
