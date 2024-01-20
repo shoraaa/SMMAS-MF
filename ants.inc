@@ -526,7 +526,7 @@ void two_phase_fallback(int a, int phase) {
         city = i;
         min = dist;
       }
-      break;
+
     }
   }
 
