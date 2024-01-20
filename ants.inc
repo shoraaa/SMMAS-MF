@@ -749,10 +749,11 @@ void smmas_deposit(int origin_city, int destination_city) {
   float * pheromone_v = pheromone[origin_city];
   #pragma omp parallel for
   for (int i = 0; i < CHUNK; ++i) {
-    pheromone_v[i] += p_rho_min;
     if (city_indexes_v[i] == destination_city) {
       pheromone_v[i] += p_rho_max;
-    } 
+    } else {
+      pheromone_v[i] += p_rho_min;
+    }
     clamp_pheromone(pheromone_v[i]);
   }
 }
