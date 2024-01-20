@@ -160,7 +160,9 @@ void choose_closest_next_naive (const int a, const int phase){
     for(int i=0; i < n; i++) {
       distance_v[i] = distance_v[i] * (int)visited_v[i];
       if(distance_v[i] > 0 && distance_v[i] < min) {
-        assert(min == INFTY);
+        if (min != INFTY) {
+          printf("%f %f\n", distance_v[i], min);
+        }
         min = distance_v[i];
         next_city = i;
       }
