@@ -45,7 +45,7 @@ void set_default_parameters()
     K_PAD = 0;
 }
 
-int k;
+float k;
 
 /**
  * @brief Writes chosen parameter settings in standard output and in report files
