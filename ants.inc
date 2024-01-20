@@ -83,7 +83,7 @@ void allocate_memory ()
 
     seeds = generate_real_matrix(threads, n);
 
-    pheromone = generate_real_matrix(n, CHUNK);
+    pheromone = generate_real_matrix(n, CHUNK_L);
 
     choice_info = generate_real_matrix(n, CHUNK_L);
 
@@ -139,7 +139,7 @@ void init_pheromone_trails ()
 
         __assume_aligned(pheromone_v, 64);
 
-        for (int j = 0; j < CHUNK; j++)
+        for (int j = 0; j < CHUNK_L; j++)
             pheromone_v[j] = pheromone_initial_trail;
     }
 }
@@ -311,7 +311,7 @@ void init_trial ()
 
     best_tour_length = INFTY;
 
-    pheromone_initial_trail = rho_max;
+    pheromone_initial_trail = (float) m / (float) nn_tour();
 
     init_pheromone_trails();
 
@@ -452,7 +452,7 @@ void compute_choice_info_init ()
 
         // Finally, copy from N-sized structure co CHUNK-sized structure
         #pragma ivdep
-        for (int j = 0; j < CHUNK; j++) {
+        for (int j = 0; j < CHUNK_L; j++) {
           choice_info_v[j] = choice_info_tmp_v[j];
           choice_info_meta_v[j] = choice_info_meta_tmp_v[j];
         }
@@ -465,9 +465,9 @@ void compute_choice_info_init ()
 int get_city_index(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
   int i = 0;
-  while(i < CHUNK && city_indexes_v[i] != destination_city) i++;
+  while(i < CHUNK_L && city_indexes_v[i] != destination_city) i++;
 
-  if(i == CHUNK) return -1;
+  if(i == CHUNK_L) return -1;
   return i;
 }
 
@@ -526,7 +526,6 @@ void two_phase_fallback(int a, int phase) {
         city = i;
         min = dist;
       }
-
     }
   }
 
