@@ -77,7 +77,7 @@ void write_params ()
     printf(format_d, "Threads:           ", threads, "");
     printf(format_d, "Neighbours:        ", CHUNK, "");
     printf(format_d, "Backup Cities:     ", K_BACKUP, "");
-    if(fallback == two_phase_fallback)
+    if(1/*fallback == two_phase_fallback*/)
       printf(format_s,"Fallback:          ", "Two Phase");
     else
       printf(format_s,"Fallback:          ", "Closest City");
