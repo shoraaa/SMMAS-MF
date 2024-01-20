@@ -468,9 +468,9 @@ void compute_choice_info_init ()
 int get_city_index(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
   int i = 0;
-  while(i < CHUNK_L && city_indexes_v[i] != destination_city) i++;
+  while(i < CHUNK && city_indexes_v[i] != destination_city) i++;
 
-  if(i == CHUNK_L) return -1;
+  if(i == CHUNK) return -1;
   return i;
 }
 
@@ -746,15 +746,13 @@ void clamp_pheromone(float& p) {
 
 void smmas_deposit(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
-  float * pheromone_v = pheromone[i];
+  float * pheromone_v = pheromone[origin_city];
   #pragma omp parallel for
   for (int i = 0; i < CHUNK; ++i) {
-    if (city_indexes_v == destination_city) {
+    pheromone_v[i] += p_rho_min;
+    if (city_indexes_v[i] == destination_city) {
       pheromone_v[i] += p_rho_max;
-    } else {
-      pheromone_v[i] += p_rho_min;
-    }
-
+    } 
     clamp_pheromone(pheromone_v[i]);
   }
 }
@@ -770,10 +768,36 @@ void pheromone_deposit () {
 
   int best_ant = find_best();
   int * tour_v = tour[best_ant];
+  int city_index;
 
-  // SMMAS:
-  // Only update for NEIGHBOURS cities
-  // choice info meta
+  const float d_rho_min_copy = p_rho_min;
+  const float d_tau = -d_rho_min_copy + p_rho_max;
+
+  // #pragma omp parallel for
+  // for (int i = 0; i < n; ++i) {
+  //   float * pheromone_v = pheromone[i];
+  //   for (int j = 0; j < CHUNK; ++j) {
+  //     pheromone_v[j] += d_rho_min_copy;
+  //   }
+  // }
+
+  // #pragma omp parallel for
+  // for (int i = 0; i < n; i++) {
+  //   int j = tour_v[i];
+  //   int k = tour_v[i+1];
+
+  //   if((city_index = get_city_index(j, k)) != -1) pheromone[j][city_index] += d_tau;
+  //   if((city_index = get_city_index(k, j)) != -1) pheromone[k][city_index] += d_tau;
+  // }
+
+  // #pragma omp parallel for
+  // for (int i = 0; i < n; ++i) {
+  //   float * pheromone_v = pheromone[i];
+  //   for (int j = 0; j < CHUNK; ++j) {
+  //     clamp_pheromone(pheromone_v[j]);
+  //   }
+  // }
+
   #pragma omp parallel for
   for (int i = 0; i < n; i++) {
     int j = tour_v[i];
