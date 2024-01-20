@@ -311,7 +311,7 @@ void init_trial ()
 
     best_tour_length = INFTY;
 
-    pheromone_initial_trail = (float) m / (float) nn_tour();
+    pheromone_initial_trail = (float) 1.0f;
 
     init_pheromone_trails();
 
