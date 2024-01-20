@@ -521,13 +521,12 @@ void two_phase_fallback(int a, int phase) {
   #pragma ivdep
   for (int i = CHUNK; i < CHUNK_L; i++) {
     if(visited_v[choice_info_meta_v[i]] == FALSE) {
-      //float dist = distance(current_city, choice_info_meta_v[i]);
+      float dist = distance(current_city, choice_info_meta_v[i]);
 
-     // if(min > dist) {
+      if(min > dist) {
         city = i;
-        min = distance(current_city, choice_info_meta_v[i]);
-      //}
-      break;
+        min = dist;
+      }
     }
   }
 
