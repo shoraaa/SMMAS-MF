@@ -516,7 +516,9 @@ void two_phase_fallback(int a, int phase) {
   float min = INFTY;
   float * visited_v = visited[a];
   int * choice_info_meta_v = choice_info_meta[current_city];
-
+  
+  float * choice_info_v = choice_info[current_city];
+  float * seeds_v = seeds[thread_id];
   float max_prob = -1.0f;
 
   __assume_aligned(visited_v, 64);
