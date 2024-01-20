@@ -777,6 +777,7 @@ void pheromone_deposit () {
 
   int best_ant = find_best();
   int * tour_v = tour[best_ant];
+  int city_index;
 
   const float d_rho_min_copy = p_rho_min;
   const float d_tau = -p_rho_min + p_rho_max;
