@@ -91,6 +91,17 @@ void write_params ()
     printf(" * - default value\n\n");
 }
 
+typedef unsigned long uint32;
+typedef long int32;   
+static inline int32 ilog2(float x)
+{
+    uint32 ix = (uint32&)x;
+    uint32 exp = (ix >> 23) & 0xFF;
+    int32 log2 = int32(exp) - 127;
+
+    return log2;
+}
+
 /**
  * @brief Initialize the program
  * @param argc Number of arguments
@@ -114,7 +125,7 @@ void init_program (int argc, char * argv[])
 
     // SMMAS
     const char * format_f2 = " %19s %15.9f%s\n";
-    float k = n * 2;
+    float k = n * ilog2(n);
     rho_min = rho_max / k;
     p_rho_min = rho * rho_min;
     
