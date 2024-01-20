@@ -523,7 +523,7 @@ void two_phase_fallback(int a, int phase) {
       float dist = distance(current_city, choice_info_meta_v[i]);
 
       if(min > dist) {
-        std::cout << min << ' ' << dist << '\n';
+        printf("%f %f", min, dist);
         assert(0);
         city = i;
         min = dist;
