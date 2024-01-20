@@ -527,25 +527,25 @@ void two_phase_fallback(int a, int phase, int thread_id) {
   #pragma ivdep
   for (int i = CHUNK; i < CHUNK_L; i++) {
 
-    const float prob = choice_info_v[i] * visited_v[choice_info_meta_v[i]] * random01(&seeds_v[i]);
-    if (prob > max_prob)
-    {
-        city = i;
-        max_prob = prob;
-    }
-
-    // if(visited_v[choice_info_meta_v[i]] == FALSE) {
-    //   float dist = distance(current_city, choice_info_meta_v[i]);
-
-    //   if(min > dist) {
+    // const float prob = choice_info_v[i] * visited_v[choice_info_meta_v[i]] * random01(&seeds_v[i]);
+    // if (prob > max_prob)
+    // {
     //     city = i;
-    //     min = dist;
-    //   }
+    //     max_prob = prob;
     // }
+
+    if(visited_v[choice_info_meta_v[i]] == FALSE) {
+      float dist = distance(current_city, choice_info_meta_v[i]);
+
+      if(min > dist) {
+        city = i;
+        min = dist;
+      }
+    }
   }
 
 
-  if (max_prob <= 0.0f/*min == INFTY*/) { /* first fallback failed, go to second fallback */
+  if (min == INFTY) { /* first fallback failed, go to second fallback */
     choose_closest_next_naive(a, phase);
   }
   else { /* first fallback success */
