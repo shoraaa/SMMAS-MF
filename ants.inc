@@ -725,7 +725,7 @@ void pheromone_evaporation ()
 {
     const double t_start = omp_get_wtime();
 
-    const float rho_d_copy = rho_d;
+    const float rho_d_copy = 1.0f - rho_d;
 
     // SMMAS-MF: same evaporation
     #pragma omp parallel for
