@@ -1,4 +1,4 @@
-# SMMAS-OMF: An optimized, memory-friendly smoothed max-min ant system approach for solving big instances of NP-Hard problems. 
+# SMMAS-OMF: An optimized, memory-friendly smooth max-min ant system approach for solving big instances of TSP NP-Hard problems. 
 ### Setup:
 1. Install miniconda and Intel C++ Compiler.
 2. Create miniconda virtual environment:
