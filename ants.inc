@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <sys/time.h>
 
-#define CHUNK 64
+#define CHUNK 32
 #define CHUNK_L (CHUNK+K_BACKUP)
 
 int ** choice_info_meta;             // Choice information matrix
@@ -83,7 +83,7 @@ void allocate_memory ()
 
     seeds = generate_real_matrix(threads, n);
 
-    pheromone = generate_real_matrix(n, CHUNK);
+    pheromone = generate_real_matrix(n, CHUNK_L);
 
     choice_info = generate_real_matrix(n, CHUNK_L);
 
@@ -139,7 +139,7 @@ void init_pheromone_trails ()
 
         __assume_aligned(pheromone_v, 64);
 
-        for (int j = 0; j < CHUNK; j++)
+        for (int j = 0; j < CHUNK_L; j++)
             pheromone_v[j] = pheromone_initial_trail;
     }
 }
@@ -468,9 +468,9 @@ void compute_choice_info_init ()
 int get_city_index(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
   int i = 0;
-  while(i < CHUNK && city_indexes_v[i] != destination_city) i++;
+  while(i < CHUNK_L && city_indexes_v[i] != destination_city) i++;
 
-  if(i == CHUNK) return -1;
+  if(i == CHUNK_L) return -1;
   return i;
 }
 
@@ -500,7 +500,7 @@ void update_choice_info() {
     float * pheromone_v = pheromone[i];
 
     #pragma ivdep
-    for (int j = 0; j < CHUNK; j++) {
+    for (int j = 0; j < CHUNK_L; j++) {
       choice_info_v[j] = powf(pheromone_v[j], alpha) * powf(1.0f / ((float) distance(i, choice_info_meta_v[j]) + 0.1f), beta);
     }
 
@@ -517,22 +517,33 @@ void two_phase_fallback(int a, int phase) {
   float * visited_v = visited[a];
   int * choice_info_meta_v = choice_info_meta[current_city];
 
+  float max_prob = -1.0f;
+
   __assume_aligned(visited_v, 64);
   __assume_aligned(choice_info_meta_v, 64);
 
   #pragma ivdep
-  for (int i = CHUNK; i < CHUNK_L; i++) {
-    if(visited_v[choice_info_meta_v[i]] == FALSE) {
-      float dist = distance(current_city, choice_info_meta_v[i]);
+  for (int i = CHUNK; i < CHUNK_L; i++) {\
 
-      if(min > dist) {
+    const float prob = choice_info_v[i] * visited_v[choice_info_meta_v[i]] * random01(&seeds_v[i]);
+    if (prob > max_prob)
+    {
         city = i;
-        min = dist;
-      }
+        max_prob = prob;
     }
+
+    // if(visited_v[choice_info_meta_v[i]] == FALSE) {
+    //   float dist = distance(current_city, choice_info_meta_v[i]);
+
+    //   if(min > dist) {
+    //     city = i;
+    //     min = dist;
+    //   }
+    // }
   }
 
-  if (min == INFTY) { /* first fallback failed, go to second fallback */
+
+  if (max_prob <= 0.0f/*min == INFTY*/) { /* first fallback failed, go to second fallback */
     choose_closest_next_naive(a, phase);
   }
   else { /* first fallback success */
@@ -731,7 +742,7 @@ void pheromone_evaporation ()
     #pragma omp parallel for
     for (int i = 0; i < n; i++) {
         float * pheromone_v = pheromone[i];
-        for (int j = 0; j < CHUNK; j++) {
+        for (int j = 0; j < CHUNK_L; j++) {
             pheromone_v[j] = rho_d_copy * pheromone_v[j];
             pheromone_v[j] = fmax(0.00000000001f, pheromone_v[j]); // IEEE Problems in choose_next
         }
@@ -748,7 +759,7 @@ void smmas_deposit(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
   float * pheromone_v = pheromone[origin_city];
   #pragma omp parallel for
-  for (int i = 0; i < CHUNK; ++i) {
+  for (int i = 0; i < CHUNK_L; ++i) {
     if (city_indexes_v[i] == destination_city) {
       pheromone_v[i] += p_rho_max;
     } else {
@@ -777,7 +788,7 @@ void pheromone_deposit () {
   #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     float * pheromone_v = pheromone[i];
-    for (int j = 0; j < CHUNK; ++j) {
+    for (int j = 0; j < CHUNK_L; ++j) {
       pheromone_v[j] += d_rho_min_copy;
     }
   }
@@ -794,7 +805,7 @@ void pheromone_deposit () {
   #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     float * pheromone_v = pheromone[i];
-    for (int j = 0; j < CHUNK; ++j) {
+    for (int j = 0; j < CHUNK_L; ++j) {
       clamp_pheromone(pheromone_v[j]);
     }
   }
