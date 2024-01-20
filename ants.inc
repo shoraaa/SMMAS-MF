@@ -454,7 +454,7 @@ void compute_choice_info_init ()
         // Finally, copy from N-sized structure co CHUNK-sized structure
         #pragma ivdep
         for (int j = 0; j < CHUNK; j++) {
-          choice_info_v[j] = choice_info_tmp_v[j];
+          choice_info_v[j] = p_init * powf(1.0f / ((float) distance(i,choice_info_meta_tmp_v[j]) + 0.1f), beta)
           choice_info_meta_v[j] = choice_info_meta_tmp_v[j];
         }
 
