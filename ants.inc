@@ -468,9 +468,9 @@ void compute_choice_info_init ()
 int get_city_index(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
   int i = 0;
-  while(i < CHUNK_L && city_indexes_v[i] != destination_city) i++;
+  while(i < CHUNK && city_indexes_v[i] != destination_city) i++;
 
-  if(i == CHUNK_L) return -1;
+  if(i == CHUNK) return -1;
   return i;
 }
 
@@ -742,15 +742,6 @@ void pheromone_evaporation ()
 
 void clamp_pheromone(float& p) {
   p = fmin(fmax(p, rho_min), rho_max);
-}
-
-int get_city_index(int origin_city, int destination_city) {
-  int * city_indexes_v = choice_info_meta[origin_city];
-  int i = 0;
-  while(i < CHUNK && city_indexes_v[i] != destination_city) i++;
-
-  if(i == CHUNK) return -1;
-  return i;
 }
 
 void smmas_deposit(int origin_city, int destination_city) {
