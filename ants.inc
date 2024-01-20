@@ -527,7 +527,6 @@ void two_phase_fallback(int a, int phase) {
       if(min > dist) {
         city = i;
         min = dist;
-        break;
       }
     }
   }
