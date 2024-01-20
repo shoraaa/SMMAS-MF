@@ -83,7 +83,7 @@ void allocate_memory ()
 
     seeds = generate_real_matrix(threads, n);
 
-    pheromone = generate_real_matrix(n, CHUNK_L);
+    pheromone = generate_real_matrix(n, CHUNK);
 
     choice_info = generate_real_matrix(n, CHUNK_L);
 
@@ -139,7 +139,7 @@ void init_pheromone_trails ()
 
         __assume_aligned(pheromone_v, 64);
 
-        for (int j = 0; j < CHUNK_L; j++)
+        for (int j = 0; j < CHUNK; j++)
             pheromone_v[j] = pheromone_initial_trail;
     }
 }
@@ -455,7 +455,7 @@ void compute_choice_info_init ()
 
         // Finally, copy from N-sized structure co CHUNK-sized structure
         #pragma ivdep
-        for (int j = 0; j < CHUNK_L; j++) {
+        for (int j = 0; j < CHUNK; j++) {
           choice_info_v[j] = choice_info_tmp_v[j];
           choice_info_meta_v[j] = choice_info_meta_tmp_v[j];
         }
@@ -468,9 +468,9 @@ void compute_choice_info_init ()
 int get_city_index(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
   int i = 0;
-  while(i < CHUNK_L && city_indexes_v[i] != destination_city) i++;
+  while(i < CHUNK && city_indexes_v[i] != destination_city) i++;
 
-  if(i == CHUNK_L) return -1;
+  if(i == CHUNK) return -1;
   return i;
 }
 
@@ -500,7 +500,7 @@ void update_choice_info() {
     float * pheromone_v = pheromone[i];
 
     #pragma ivdep
-    for (int j = 0; j < CHUNK_L; j++) {
+    for (int j = 0; j < CHUNK; j++) {
       choice_info_v[j] = powf(pheromone_v[j], alpha) * powf(1.0f / ((float) distance(i, choice_info_meta_v[j]) + 0.1f), beta);
     }
 
@@ -744,7 +744,7 @@ void pheromone_evaporation ()
     #pragma omp parallel for
     for (int i = 0; i < n; i++) {
         float * pheromone_v = pheromone[i];
-        for (int j = 0; j < CHUNK_L; j++) {
+        for (int j = 0; j < CHUNK; j++) {
             pheromone_v[j] = rho_d_copy * pheromone_v[j];
             pheromone_v[j] = fmax(0.00000000001f, pheromone_v[j]); // IEEE Problems in choose_next
         }
@@ -790,7 +790,7 @@ void pheromone_deposit () {
   #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     float * pheromone_v = pheromone[i];
-    for (int j = 0; j < CHUNK_L; ++j) {
+    for (int j = 0; j < CHUNK; ++j) {
       pheromone_v[j] += d_rho_min_copy;
     }
   }
@@ -807,7 +807,7 @@ void pheromone_deposit () {
   #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     float * pheromone_v = pheromone[i];
-    for (int j = 0; j < CHUNK_L; ++j) {
+    for (int j = 0; j < CHUNK; ++j) {
       clamp_pheromone(pheromone_v[j]);
     }
   }
