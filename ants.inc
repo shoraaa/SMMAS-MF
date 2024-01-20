@@ -744,12 +744,25 @@ void clamp_pheromone(float& p) {
   p = fmin(fmax(p, rho_min), rho_max);
 }
 
+int get_city_index(int origin_city, int destination_city) {
+  int * city_indexes_v = choice_info_meta[origin_city];
+  int i = 0;
+  while(i < CHUNK && city_indexes_v[i] != destination_city) i++;
+
+  if(i == CHUNK) return -1;
+  return i;
+}
+
 void smmas_deposit(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
+  float * pheromone_v = pheromone[i];
   #pragma omp parallel for
   for (int i = 0; i < CHUNK; ++i) {
-    pheromone[origin_city][i] += city_indexes_v[i] == destination_city ? p_rho_max : p_rho_min;
-    clamp_pheromone(pheromone[origin_city][i]);
+    pheromone_v[i] += p_rho_min;
+    if (city_indexes_v == destination_city) {
+      pheromone_v[i] += p_rho_max;
+    } 
+    clamp_pheromone(pheromone_v[i]);
   }
 }
 
@@ -765,16 +778,32 @@ void pheromone_deposit () {
   int best_ant = find_best();
   int * tour_v = tour[best_ant];
 
-  // SMMAS:
-  // Only update for NEIGHBOURS cities
-  // choice info meta
+  const float d_rho_min_copy = p_rho_min;
+  const float d_tau = -p_rho_min + p_rho_max;
+
+  #pragma omp parallel for
+  for (int i = 0; i < n; ++i) {
+    float * pheromone_v = pheromone[i];
+    for (int j = 0; j < CHUNK; ++j) {
+      pheromone_v[j] += d_rho_min_copy;
+    }
+  }
+
   #pragma omp parallel for
   for (int i = 0; i < n; i++) {
     int j = tour_v[i];
     int k = tour_v[i+1];
 
-    smmas_deposit(j, k);
-    smmas_deposit(k, j);
+    if((city_index = get_city_index(j, k)) != -1) pheromone[j][city_index] += d_tau;
+    if((city_index = get_city_index(k, j)) != -1) pheromone[k][city_index] += d_tau;
+  }
+
+  #pragma omp parallel for
+  for (int i = 0; i < n; ++i) {
+    float * pheromone_v = pheromone[i];
+    for (int j = 0; j < CHUNK; ++j) {
+      clamp_pheromone(pheromone_v[j]);
+    }
   }
 
   t_pheromone_deposit += omp_get_wtime() - t_start;
