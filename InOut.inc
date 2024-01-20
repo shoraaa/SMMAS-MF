@@ -45,6 +45,8 @@ void set_default_parameters()
     K_PAD = 0;
 }
 
+int k;
+
 /**
  * @brief Writes chosen parameter settings in standard output and in report files
  */
@@ -68,6 +70,7 @@ void write_params ()
     printf(format_f2, "Rho:               ", rho, CHECK_DEFAULT(rho, DEFAULT_RHO));
     printf(format_f2, "Rho_Max:           ", rho_max, CHECK_DEFAULT(rho_max, DEFAULT_RHO_MAX));
     printf(format_f2, "Rho_Min:           ", rho_min, CHECK_DEFAULT(rho_min, -1));
+    printf(format_f2, "K:           ", k, CHECK_DEFAULT(k, -1));
     printf(format_f2, "Delta_Rho_Max:     ", p_rho_max, CHECK_DEFAULT(p_rho_max, DEFAULT_RHO_MAX));
     printf(format_f2, "Delta_Rho_Min:     ", p_rho_min, CHECK_DEFAULT(p_rho_min, -1));
     printf(format_s, "Selection Function:", "I-Roulette v3");
@@ -125,7 +128,7 @@ void init_program (int argc, char * argv[])
 
     // SMMAS
     const char * format_f2 = " %19s %15.9f%s\n";
-    float k = n * ilog2(n);
+    k = n * ilog2(n);
     rho_min = rho_max / k;
     p_rho_min = rho * rho_min;
     
