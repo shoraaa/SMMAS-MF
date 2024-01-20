@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <sys/time.h>
 
-#define CHUNK 32
+#define CHUNK 64
 #define CHUNK_L (CHUNK+K_BACKUP)
 
 int ** choice_info_meta;             // Choice information matrix
