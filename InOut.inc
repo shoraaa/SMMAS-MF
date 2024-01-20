@@ -12,7 +12,7 @@
 #define DEFAULT_MAX_ITERATIONS  100
 #define DEFAULT_ALPHA           1.0f
 #define DEFAULT_BETA            5.0f    /* 2 to 5*/
-#define DEFAULT_RHO             0.2f
+#define DEFAULT_RHO             0.375f
 #define DEFAULT_RHO_MAX         1.0f
 #define DEFAULT_K               32
 #define DEFAULT_L               100.0f
@@ -106,7 +106,8 @@ void init_program (int argc, char * argv[])
 
     assert(n > K_BACKUP);
 
-    rho_min = rho_max / (n * 2.0f);
+    float ratio = n * n / 32.0f;
+    rho_min = rho_max / ratio;
     delta_rho_max = rho_max * rho;
     delta_rho_min = rho_min * rho;
 
