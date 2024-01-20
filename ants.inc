@@ -83,7 +83,7 @@ void allocate_memory ()
 
     seeds = generate_real_matrix(threads, n);
 
-    pheromone = generate_real_matrix(n, CHUNK);
+    pheromone = generate_real_matrix(n, CHUNK_L);
 
     choice_info = generate_real_matrix(n, CHUNK_L);
 
@@ -139,12 +139,11 @@ void init_pheromone_trails ()
 
         __assume_aligned(pheromone_v, 64);
 
-        for (int j = 0; j < CHUNK; j++)
+        for (int j = 0; j < CHUNK_L; j++)
             pheromone_v[j] = pheromone_initial_trail;
     }
 }
 
-// TODO: use kd-tree to optimize 
 void choose_closest_next_naive (const int a, const int phase){
     const int current_city = tour[a][phase-1];
 
@@ -312,9 +311,7 @@ void init_trial ()
 
     best_tour_length = INFTY;
 
-    //pheromone_initial_trail = (float) m / (float) nn_tour();
-    // SMMAS
-    pheromone_initial_trail = rho_max;
+    pheromone_initial_trail = (float) m / (float) nn_tour();
 
     init_pheromone_trails();
 
@@ -468,9 +465,9 @@ void compute_choice_info_init ()
 int get_city_index(int origin_city, int destination_city) {
   int * city_indexes_v = choice_info_meta[origin_city];
   int i = 0;
-  while(i < CHUNK && city_indexes_v[i] != destination_city) i++;
+  while(i < CHUNK_L && city_indexes_v[i] != destination_city) i++;
 
-  if(i == CHUNK) return -1;
+  if(i == CHUNK_L) return -1;
   return i;
 }
 
@@ -727,7 +724,6 @@ void pheromone_evaporation ()
 
     const float rho_d_copy = rho_d;
 
-    // SMMAS-MF: same evaporation
     #pragma omp parallel for
     for (int i = 0; i < n; i++) {
         float * pheromone_v = pheromone[i];
@@ -740,23 +736,6 @@ void pheromone_evaporation ()
     t_pheromone_evaporation += omp_get_wtime() - t_start;
 }
 
-void clamp_pheromone(float& p) {
-  p = fmin(fmax(p, rho_min), rho_max);
-}
-
-void smmas_deposit(int origin_city, int destination_city) {
-  int * city_indexes_v = choice_info_meta[origin_city];
-  float * pheromone_v = pheromone[origin_city];
-  #pragma omp parallel for
-  for (int i = 0; i < CHUNK; ++i) {
-    if (city_indexes_v[i] == destination_city) {
-      pheromone_v[i] += p_rho_max;
-    } else {
-      pheromone_v[i] += p_rho_min;
-    }
-  }
-}
-
 /**
  * @brief Reinforces edges used in ants' solution
  * Pheromones of arcs in ants' tour are increased.
@@ -767,19 +746,9 @@ void pheromone_deposit () {
   const double t_start = omp_get_wtime();
 
   int best_ant = find_best();
-  int * tour_v = tour[best_ant];
   int city_index;
-
-  const float d_rho_min_copy = p_rho_min;
-  const float d_tau = -d_rho_min_copy + p_rho_max;
-
-  #pragma omp parallel for
-  for (int i = 0; i < n; ++i) {
-    float * pheromone_v = pheromone[i];
-    for (int j = 0; j < CHUNK; ++j) {
-      pheromone_v[j] += d_rho_min_copy;
-    }
-  }
+  int * tour_v = tour[best_ant];
+  const float d_tau = 1.0f / (float) tour_length[best_ant];
 
   #pragma omp parallel for
   for (int i = 0; i < n; i++) {
@@ -789,15 +758,6 @@ void pheromone_deposit () {
     if((city_index = get_city_index(j, k)) != -1) pheromone[j][city_index] += d_tau;
     if((city_index = get_city_index(k, j)) != -1) pheromone[k][city_index] += d_tau;
   }
-
-  // #pragma omp parallel for
-  // for (int i = 0; i < n; i++) {
-  //   int j = tour_v[i];
-  //   int k = tour_v[i+1];
-
-  //   smmas_deposit(j, k);
-  //   smmas_deposit(k, j);
-  // }
 
   t_pheromone_deposit += omp_get_wtime() - t_start;
 }
@@ -818,4 +778,3 @@ void pheromone_update ()
 
     pheromone_deposit();
 }
-

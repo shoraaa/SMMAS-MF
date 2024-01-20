@@ -12,12 +12,10 @@
 #define DEFAULT_MAX_ITERATIONS  100
 #define DEFAULT_ALPHA           1.0f
 #define DEFAULT_BETA            5.0f    /* 2 to 5*/
-#define DEFAULT_RHO             0.4f
-#define DEFAULT_RHO_MAX         1.0f
+#define DEFAULT_RHO             0.5f
 #define DEFAULT_K               32
 #define DEFAULT_L               100.0f
 #define DEFAULT_TOUR_FILE       "tour.tsp"
-
 
 #define CHECK_DEFAULT(x,y)      (x == y ? "  *" : "")
 
@@ -36,16 +34,12 @@ void set_default_parameters()
     alpha = DEFAULT_ALPHA;
     beta = DEFAULT_BETA;
     rho = DEFAULT_RHO;
-    rho_max = DEFAULT_RHO_MAX;
-    p_rho_max = rho * rho_max;
     max_trials = DEFAULT_MAX_TRIALS;
     max_iterations = DEFAULT_MAX_ITERATIONS;
     LS_PERCENTAGE = DEFAULT_L;
     K_BACKUP = DEFAULT_K;
     K_PAD = 0;
 }
-
-float k;
 
 /**
  * @brief Writes chosen parameter settings in standard output and in report files
@@ -68,16 +62,11 @@ void write_params ()
     printf(format_f1, "Alpha:             ", alpha, CHECK_DEFAULT(alpha, DEFAULT_ALPHA));
     printf(format_f1, "Beta:              ", beta, CHECK_DEFAULT(beta, DEFAULT_BETA));
     printf(format_f2, "Rho:               ", rho, CHECK_DEFAULT(rho, DEFAULT_RHO));
-    printf(format_f2, "Rho_Max:           ", rho_max, CHECK_DEFAULT(rho_max, DEFAULT_RHO_MAX));
-    printf(format_f2, "Rho_Min:           ", rho_min, CHECK_DEFAULT(rho_min, -1));
-    printf(format_f2, "K:           ", k, CHECK_DEFAULT(k, -1));
-    printf(format_f2, "Delta_Rho_Max:     ", p_rho_max, CHECK_DEFAULT(p_rho_max, DEFAULT_RHO_MAX));
-    printf(format_f2, "Delta_Rho_Min:     ", p_rho_min, CHECK_DEFAULT(p_rho_min, -1));
     printf(format_s, "Selection Function:", "I-Roulette v3");
     printf(format_d, "Threads:           ", threads, "");
     printf(format_d, "Neighbours:        ", CHUNK, "");
     printf(format_d, "Backup Cities:     ", K_BACKUP, "");
-    if(1/*fallback == two_phase_fallback*/)
+    if(fallback == two_phase_fallback)
       printf(format_s,"Fallback:          ", "Two Phase");
     else
       printf(format_s,"Fallback:          ", "Closest City");
@@ -92,17 +81,6 @@ void write_params ()
     printf(format_d, "Prefetch padding:  ", K_PAD, "");
     printf(H_SHORT_LINE);
     printf(" * - default value\n\n");
-}
-
-typedef unsigned long uint32;
-typedef long int32;   
-static inline int32 ilog2(float x)
-{
-    uint32 ix = (uint32&)x;
-    uint32 exp = (ix >> 23) & 0xFF;
-    int32 log2 = int32(exp) - 127;
-
-    return log2;
 }
 
 /**
@@ -125,13 +103,6 @@ void init_program (int argc, char * argv[])
     assert(n > K_BACKUP);
 
     rho_d = 1.0f - rho;
-
-    // SMMAS
-    const char * format_f2 = " %19s %15.9f%s\n";
-    k = n * n / 32.0f;
-    rho_min = rho_max / k;
-    p_rho_min = rho * rho_min;
-    
 
     threads = omp_get_max_threads();
 
