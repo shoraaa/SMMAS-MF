@@ -11,8 +11,9 @@
 #define DEFAULT_MAX_TRIALS      13
 #define DEFAULT_MAX_ITERATIONS  100
 #define DEFAULT_ALPHA           1.0f
-#define DEFAULT_BETA            5.0f    /* 2 to 5*/
+#define DEFAULT_BETA            2.0f    /* 2 to 5*/
 #define DEFAULT_RHO             0.5f
+#define DEFAULT_RHO_MAX         1.0f
 #define DEFAULT_K               32
 #define DEFAULT_L               100.0f
 #define DEFAULT_TOUR_FILE       "tour.tsp"
@@ -62,6 +63,8 @@ void write_params ()
     printf(format_f1, "Alpha:             ", alpha, CHECK_DEFAULT(alpha, DEFAULT_ALPHA));
     printf(format_f1, "Beta:              ", beta, CHECK_DEFAULT(beta, DEFAULT_BETA));
     printf(format_f2, "Rho:               ", rho, CHECK_DEFAULT(rho, DEFAULT_RHO));
+    printf(format_f2, "Rho Max:               ", rho_max, CHECK_DEFAULT(rho, DEFAULT_RHO));
+    printf(format_f2, "Rho Min:               ", rho_min, CHECK_DEFAULT(rho, DEFAULT_RHO));
     printf(format_s, "Selection Function:", "I-Roulette v3");
     printf(format_d, "Threads:           ", threads, "");
     printf(format_d, "Neighbours:        ", CHUNK, "");
@@ -102,6 +105,10 @@ void init_program (int argc, char * argv[])
 
     assert(n > K_BACKUP);
 
+    rho_min = rho_max / (n * 2.0f);
+    delta_rho_max = rho_max * rho;
+    delta_rho_min = rho_min * rho;
+    
     rho_d = 1.0f - rho;
 
     threads = omp_get_max_threads();

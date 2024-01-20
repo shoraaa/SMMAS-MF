@@ -749,7 +749,15 @@ void pheromone_deposit () {
   int best_ant = find_best();
   int city_index;
   int * tour_v = tour[best_ant];
-  const float d_tau = 1.0f / (float) tour_length[best_ant];
+  const float d_tau = -delta_rho_min + delta_rho_max;
+
+  #pragma omp parallel for
+  for (int i = 0; i < n; i++) {
+    float * pheromone_v = pheromone[i];
+    for (int j = 0; j < CHUNK; ++j) {
+      pheromone_v[j] += delta_rho_min;
+    }
+  }
 
   #pragma omp parallel for
   for (int i = 0; i < n; i++) {
