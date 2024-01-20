@@ -35,6 +35,7 @@ void set_default_parameters()
     alpha = DEFAULT_ALPHA;
     beta = DEFAULT_BETA;
     rho = DEFAULT_RHO;
+    rho_max = DEFAULT_RHO_MAX;
     max_trials = DEFAULT_MAX_TRIALS;
     max_iterations = DEFAULT_MAX_ITERATIONS;
     LS_PERCENTAGE = DEFAULT_L;
@@ -108,7 +109,7 @@ void init_program (int argc, char * argv[])
     rho_min = rho_max / (n * 2.0f);
     delta_rho_max = rho_max * rho;
     delta_rho_min = rho_min * rho;
-    
+
     rho_d = 1.0f - rho;
 
     threads = omp_get_max_threads();
