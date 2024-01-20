@@ -19,7 +19,7 @@ float beta;             // Importance of the heuristic information
 float rho_max;
 float rho_min;
 float delta_rho_max;
-float delta_rho_max;
+float delta_rho_min;
 
 int max_trials;         // Number of independent trials
 int max_iterations;     // Number of iterations
