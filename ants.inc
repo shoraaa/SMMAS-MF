@@ -160,11 +160,9 @@ void choose_closest_next_naive (const int a, const int phase){
     for(int i=0; i < n; i++) {
       distance_v[i] = distance_v[i] * (int)visited_v[i];
       if(distance_v[i] > 0 && distance_v[i] < min) {
-        if (min != INFTY) {
-          printf("%f %f\n", distance_v[i], min);
-        }
         min = distance_v[i];
         next_city = i;
+        break;
       }
     }
 
@@ -445,7 +443,8 @@ void compute_choice_info_init ()
 
         #pragma ivdep
         for (int j = 0; j < n; j++)
-          choice_info_tmp_v[j] = p_init * powf(1.0f / ((float) distance(i,j) + 0.1f), beta);
+          //choice_info_tmp_v[j] = p_init * powf(1.0f / ((float) distance(i,j) + 0.1f), beta);
+          choice_info_tmp_v[j] = - (float) distance(i,j);
 
 	      choice_info_tmp_v[i] = 0.0f;
 
