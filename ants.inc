@@ -442,8 +442,7 @@ void compute_choice_info_init ()
 
         #pragma ivdep
         for (int j = 0; j < n; j++)
-          //choice_info_tmp_v[j] = p_init * powf(1.0f / ((float) distance(i,j) + 0.1f), beta);
-          choice_info_tmp_v[j] = distance(i, j);
+          choice_info_tmp_v[j] = p_init * powf(1.0f / ((float) distance(i,j) + 0.1f), beta);
 
 	choice_info_tmp_v[i] = 0.0f;
 
